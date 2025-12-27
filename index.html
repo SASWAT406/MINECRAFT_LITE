@@ -31,13 +31,13 @@
 		<!-- Initialisation code -->
 		<script type="text/javascript">			
 			// Create a new flat world
-			var world = new World( 16, 16, 16 );
+			var world = new World( 64, 32, 64 );
 			world.createFlatWorld( 6 );
 			
 			// Set up renderer
 			var render = new Renderer( "renderSurface" );
 			render.setWorld( world, 8 );
-			render.setPerspective( 60, 0.01, 200 );
+			render.setPerspective( 60, 0.01, 500 );
 			
 			// Create physics simulator
 			var physics = new Physics();
@@ -48,6 +48,27 @@
 			player.setWorld( world );
 			player.setInputCanvas( "renderSurface" );
 			player.setMaterialSelector( "materialSelector" );
+			// --- START OF MOUSE LOCK CODE ---
+			var canvas = document.getElementById("renderSurface");
+
+			// 1. When you click the game, lock the cursor
+			canvas.onclick = function() {
+   			canvas.requestPointerLock();
+};
+
+// 2. Listen for mouse movement
+			document.addEventListener('mousemove', function(e) {
+    if (document.pointerLockElement === canvas) {
+        // Update player angles based on mouse movement
+        // You might need to adjust the '0.1' sensitivity
+        player.angles[0] -= e.movementY * 0.1; 
+        player.angles[1] -= e.movementX * 0.1;
+        
+        // Keep looking up/down within limits (so you don't break your neck)
+        player.angles[0] = Math.max(-90, Math.min(90, player.angles[0]));
+    }
+}, false);
+// --- END OF MOUSE LOCK CODE ---
 			
 			// Render loop			
 			setInterval( function()
