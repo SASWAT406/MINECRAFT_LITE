@@ -244,6 +244,28 @@ Player.prototype.update = function()
 	}
 
 	this.lastUpdate = new Date().getTime();
+	// --- INVISIBLE BORDER START ---
+// Get the world size (sx = size X, sz = size Z)
+var limitX = this.world.sx; 
+var limitZ = this.world.sz;
+
+// 1. Stop if trying to go off the West/East edge
+// We use '1.5' as a buffer so you stop just before the void
+if (this.pos.x < 1.5) {
+    this.pos.x = 1.5;
+}
+if (this.pos.x > limitX - 1.5) {
+    this.pos.x = limitX - 1.5;
+}
+
+// 2. Stop if trying to go off the North/South edge
+if (this.pos.z < 1.5) {
+    this.pos.z = 1.5;
+}
+if (this.pos.z > limitZ - 1.5) {
+    this.pos.z = limitZ - 1.5;
+}
+// --- INVISIBLE BORDER END ---
 }
 
 // resolveCollision( pos, bPos, velocity )
