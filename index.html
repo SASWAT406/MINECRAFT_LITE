@@ -68,26 +68,33 @@
             player.setMaterialSelector( "materialSelector" );
             
             // --- MOUSE LOCK & CONTROLS ---
-            var canvas = document.getElementById("renderSurface");
-
-            canvas.onclick = function() {
-                canvas.requestPointerLock();
-            };
-
             document.addEventListener('mousemove', function(e) {
                 if (document.pointerLockElement === canvas) {
                     
-                    // --- SENSITIVITY SETTINGS ---
-                    var sensitivity = 0.02; 
-                    var directionY = 1; // Change to 1 if up/down is wrong
-                    var directionX = 1;  // Change to -1 if left/right is wrong
+                    // --- SENSITIVITY ---
+                    // Previous was 0.02. Now it is 0.002 (Very smooth/slow)
+                    var sensitivity = 0.002; 
                     
+                    // --- DIRECTIONS ---
+                    var directionY = -1;  // Mouse Up = Look Up
+                    var directionX = -1;  // Mouse Right = Turn Right
+                    
+                    // --- MOVEMENT LOGIC ---
                     player.angles[0] += e.movementY * sensitivity * directionY; 
                     player.angles[1] -= e.movementX * sensitivity * directionX;
 
-                    // Clamp Vertical Rotation (No Dizziness)
-                    if (player.angles[0] < -90) player.angles[0] = -90;
-                    if (player.angles[0] > 90) player.angles[0] = 90;
+                    // --- THE FIX: CLAMP VERTICAL ROTATION (RADIANS) ---
+                    // We use Math.PI / 2 instead of 90.
+                    // This stops the camera exactly at straight up and straight down.
+                    
+                    var verticalLimit = Math.PI / 2; 
+
+                    if (player.angles[0] < -verticalLimit) {
+                        player.angles[0] = -verticalLimit;
+                    }
+                    if (player.angles[0] > verticalLimit) {
+                        player.angles[0] = verticalLimit;
+                    }
                 }
             }, false);
             
